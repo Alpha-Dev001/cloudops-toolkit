@@ -1,10 +1,2 @@
 #!/bin/bash
-
-fatal() {
-
-    local MESSAGE="$1"
-
-    echo "[FATAL] $MESSAGE"
-
-    exit 1
-}
+fatal(){ echo "[FATAL] $1"; exit 1; }

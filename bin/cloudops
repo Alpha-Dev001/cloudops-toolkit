@@ -1,72 +1,44 @@
 #!/bin/bash
+set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 source "$ROOT_DIR/lib/colors.sh"
 source "$ROOT_DIR/lib/logger.sh"
 source "$ROOT_DIR/lib/config.sh"
 source "$ROOT_DIR/lib/errors.sh"
+source "$ROOT_DIR/lib/output.sh"
 
-COMMAND="$1"
+VERSION="1.0.0"
+
+show_help() {
+echo "CloudOps Toolkit v${VERSION}"
+echo "Usage: cloudops <command>"
+}
+
+run_script() {
+local SCRIPT="$1"
+[ -f "$SCRIPT" ] || { error "Script not found: $SCRIPT"; exit 1; }
+ROOT_DIR="$ROOT_DIR" bash "$SCRIPT"
+}
+
+COMMAND="${1:-help}"
 
 case "$COMMAND" in
-
-version)
-
-    info "CloudOps Toolkit v1.0.0"
-
-    ;;
-
-help)
-
-echo ""
-echo "CloudOps Toolkit"
-echo ""
-
-echo "Available Commands:"
-echo ""
-
-echo "Monitoring"
-echo "  cloudops cpu"
-echo "  cloudops memory"
-echo "  cloudops disk"
-echo "  cloudops health"
-
-echo ""
-
-echo "System"
-echo "  cloudops version"
-
-;;
-
-cpu)
-
-    bash "$ROOT_DIR/cmd/monitoring/cpu.sh"
-
-    ;;
-
-memory)
-
-    bash "$ROOT_DIR/cmd/monitoring/memory.sh"
-
-    ;;
-
-disk)
-
-    bash "$ROOT_DIR/cmd/monitoring/disk.sh"
-
-    ;;
-
-health)
-
-    bash "$ROOT_DIR/cmd/monitoring/health.sh"
-
-    ;;
-
-    error "Unknown command"
-
-    exit 1
-
-    ;;
-
+version) info "CloudOps Toolkit v${VERSION}" ;;
+help) show_help ;;
+cpu) run_script "$ROOT_DIR/cmd/monitoring/cpu.sh" ;;
+memory) run_script "$ROOT_DIR/cmd/monitoring/memory.sh" ;;
+disk) run_script "$ROOT_DIR/cmd/monitoring/disk.sh" ;;
+health) run_script "$ROOT_DIR/cmd/monitoring/health.sh" ;;
+security)
+case "${2:-}" in
+audit) run_script "$ROOT_DIR/cmd/security/audit.sh" ;;
+users) run_script "$ROOT_DIR/cmd/security/users.sh" ;;
+ports) run_script "$ROOT_DIR/cmd/security/ports.sh" ;;
+ssh) run_script "$ROOT_DIR/cmd/security/ssh.sh" ;;
+*) echo "security {audit|users|ports|ssh}" ;;
+esac ;;
+test) bash "$ROOT_DIR/tests/run_tests.sh" ;;
+*) error "Unknown command"; exit 1 ;;
 esac
