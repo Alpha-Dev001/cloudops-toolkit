@@ -27,7 +27,7 @@ reports/        Generated reports
 ## Installation
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Alpha-Dev001/cloudops-toolkit
 cd cloudops-toolkit
 cp config/config.env.example config/config.env
 chmod +x bin/cloudops
