@@ -1,0 +1,72 @@
+#!/bin/bash
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+
+source "$ROOT_DIR/lib/colors.sh"
+source "$ROOT_DIR/lib/logger.sh"
+source "$ROOT_DIR/lib/config.sh"
+source "$ROOT_DIR/lib/errors.sh"
+
+COMMAND="$1"
+
+case "$COMMAND" in
+
+version)
+
+    info "CloudOps Toolkit v1.0.0"
+
+    ;;
+
+help)
+
+echo ""
+echo "CloudOps Toolkit"
+echo ""
+
+echo "Available Commands:"
+echo ""
+
+echo "Monitoring"
+echo "  cloudops cpu"
+echo "  cloudops memory"
+echo "  cloudops disk"
+echo "  cloudops health"
+
+echo ""
+
+echo "System"
+echo "  cloudops version"
+
+;;
+
+cpu)
+
+    bash "$ROOT_DIR/cmd/monitoring/cpu.sh"
+
+    ;;
+
+memory)
+
+    bash "$ROOT_DIR/cmd/monitoring/memory.sh"
+
+    ;;
+
+disk)
+
+    bash "$ROOT_DIR/cmd/monitoring/disk.sh"
+
+    ;;
+
+health)
+
+    bash "$ROOT_DIR/cmd/monitoring/health.sh"
+
+    ;;
+
+    error "Unknown command"
+
+    exit 1
+
+    ;;
+
+esac
